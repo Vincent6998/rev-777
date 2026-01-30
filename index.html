@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Technique Boeing 777</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Écran de démarrage -->
+    <div id="startScreen" class="screen active">
+        <div class="container">
+            <div class="header">
+                <div class="logo">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M30 5L55 20V40L30 55L5 40V20L30 5Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M30 15L45 25V35L30 45L15 35V25L30 15Z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <h1>Quiz Technique B777</h1>
+                <p class="subtitle">Testez vos connaissances sur le Boeing 777</p>
+            </div>
+
+            <div class="card">
+                <h2>Sélectionnez vos catégories</h2>
+                <p class="help-text">Choisissez une ou plusieurs catégories ATA pour commencer</p>
+                
+                <div class="category-controls">
+                    <button id="selectAllBtn" class="btn-secondary">Tout sélectionner</button>
+                    <button id="deselectAllBtn" class="btn-secondary">Tout désélectionner</button>
+                </div>
+                
+                <div id="categories" class="categories-grid">
+                    <!-- Les catégories seront ajoutées ici dynamiquement -->
+                </div>
+
+                <div class="quiz-info">
+                    <div class="info-item">
+                        <span class="info-label">Nombre de questions :</span>
+                        <span class="info-value" id="questionCount">40</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Temps par question :</span>
+                        <span class="info-value">2 minutes</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Seuil de réussite :</span>
+                        <span class="info-value">75%</span>
+                    </div>
+                </div>
+
+                <button id="startButton" class="btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M6 4l10 6-10 6V4z"/>
+                    </svg>
+                    Commencer le quiz
+                </button>
+            </div>
+
+            <div id="historySection" class="card history-section" style="display: none;">
+                <h3>Derniers résultats</h3>
+                <div id="historyList"></div>
+                <button id="clearHistoryBtn" class="btn-secondary btn-sm">Effacer l'historique</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Écran du quiz -->
+    <div id="quizScreen" class="screen">
+        <div class="container">
+            <div class="quiz-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        Question <span id="currentQuestionNumber">1</span> sur <span id="totalQuestions">40</span>
+                    </div>
+                </div>
+                
+                <div class="quiz-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Score actuel</span>
+                        <span id="currentScore" class="stat-value">0/0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Temps restant</span>
+                        <span id="timeRemaining" class="stat-value timer">2:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card quiz-card">
+                <div id="questionCategory" class="question-category"></div>
+                <h2 id="questionText" class="question-text"></h2>
+                
+                <div id="choicesContainer" class="choices-container">
+                    <!-- Les choix seront ajoutés ici -->
+                </div>
+
+                <div id="feedback" class="feedback"></div>
+
+                <div class="quiz-actions">
+                    <button id="submitButton" class="btn-primary">Valider la réponse</button>
+                    <button id="nextButton" class="btn-primary" style="display: none;">
+                        Question suivante
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M8 4l6 6-6 6V4z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Écran des résultats -->
+    <div id="resultScreen" class="screen">
+        <div class="container">
+            <div class="card result-card">
+                <div id="resultBadge" class="result-badge"></div>
+                
+                <h1 id="resultTitle" class="result-title"></h1>
+                <div id="resultScore" class="result-score"></div>
+                <div id="resultPercentage" class="result-percentage"></div>
+
+                <div id="categoryStats" class="category-stats">
+                    <!-- Les statistiques par catégorie seront ajoutées ici -->
+                </div>
+
+                <div class="result-actions">
+                    <button id="restartButton" class="btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M4 10a6 6 0 0112 0H4zm6-8a8 8 0 100 16 8 8 0 000-16z"/>
+                        </svg>
+                        Recommencer
+                    </button>
+                    <button id="newQuizButton" class="btn-secondary">Nouveau quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="quiz.js"></script>
+</body>
+</html>
