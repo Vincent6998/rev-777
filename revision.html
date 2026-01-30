@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Révision - B777</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        /* Styles spécifiques à la page de révision */
+        .revision-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header p {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .ata-list {
+            padding: 1rem 0;
+        }
+
+        .ata-category {
+            margin-bottom: 0.5rem;
+        }
+
+        .ata-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ata-item:hover {
+            background: var(--bg-secondary);
+            border-left-color: var(--primary-color);
+        }
+
+        .ata-item.active {
+            background: var(--bg-secondary);
+            border-left-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .ata-code {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .ata-name {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .content-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .content-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-header h2 {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .content-header .ata-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .content-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--bg-secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .notes-content {
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .notes-content ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .notes-content li {
+            margin-bottom: 0.75rem;
+        }
+
+        .notes-content strong {
+            color: var(--primary-color);
+        }
+
+        .schema-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .schema-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .schema-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .schema-caption {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 200;
+            background: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        /* Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Tag style */
+        .tag {
+            display: inline-block;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            margin: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="revision-container">
+        <!-- Mobile Menu Toggle -->
+        <div class="mobile-menu-toggle" onclick="toggleSidebar()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>📚 Révisions</h1>
+                <p>Sélectionnez une catégorie ATA</p>
+                <a href="index.html" class="back-button">
+                    ← Retour à l'accueil
+                </a>
+            </div>
+
+            <div class="ata-list" id="ataList">
+                <!-- Les catégories ATA seront ajoutées ici dynamiquement -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div id="contentArea">
+                <div class="empty-state">
+                    <svg viewBox="0 0 100 100" fill="currentColor">
+                        <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" opacity="0.3"/>
+                        <text x="50" y="55" font-size="40" text-anchor="middle" fill="currentColor">📖</text>
+                    </svg>
+                    <h2>Sélectionnez une catégorie ATA</h2>
+                    <p>Choisissez une catégorie dans le menu de gauche pour afficher les notes et schémas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <div class="image-modal-close">×</div>
+        <img id="modalImage" src="" alt="">
+    </div>
+
+    <script src="revision-data.js"></script>
+    <script>
+        // Toggle sidebar sur mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Charger les catégories ATA
+        function loadATACategories() {
+            const ataList = document.getElementById('ataList');
+            ataList.innerHTML = '';
+
+            revisionData.forEach((ata, index) => {
+                const ataItem = document.createElement('div');
+                ataItem.className = 'ata-item';
+                ataItem.onclick = () => loadATAContent(index);
+                
+                const contentCount = (ata.notes ? 1 : 0) + (ata.schemas ? ata.schemas.length : 0);
+                
+                ataItem.innerHTML = `
+                    <div>
+                        <div class="ata-code">${ata.code}</div>
+                        <div class="ata-name">${ata.name}</div>
+                    </div>
+                    <span class="content-count">${contentCount}</span>
+                `;
+                
+                ataList.appendChild(ataItem);
+            });
+        }
+
+        // Charger le contenu d'un ATA
+        function loadATAContent(index) {
+            const ata = revisionData[index];
+            const contentArea = document.getElementById('contentArea');
+            
+            // Mettre à jour l'état actif
+            document.querySelectorAll('.ata-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+
+            // Fermer le menu mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+
+            // Construire le contenu
+            let html = `
+                <div class="content-header">
+                    <div class="ata-badge">${ata.code}</div>
+                    <h2>${ata.name}</h2>
+                </div>
+            `;
+
+            // Ajouter les notes si disponibles
+            if (ata.notes) {
+                html += `
+                    <div class="content-section">
+                        <h3>📝 Notes de cours</h3>
+                        <div class="notes-content">
+                            ${ata.notes}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Ajouter les schémas si disponibles
+            if (ata.schemas && ata.schemas.length > 0) {
+                html += `
+                    <div class="content-section">
+                        <h3>🖼️ Schémas techniques</h3>
+                `;
+                
+                ata.schemas.forEach((schema, i) => {
+                    html += `
+                        <div class="schema-container">
+                            <img src="${schema.url}" alt="${schema.caption}" onclick="openImageModal('${schema.url}')">
+                            <div class="schema-caption">${schema.caption}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+
+            contentArea.innerHTML = html;
+        }
+
+        // Modal d'image
+        function openImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = src;
+            modal.classList.add('active');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            loadATACategories();
+        });
+    </script>
+</body>
+</html>
