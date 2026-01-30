@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B777 Training - Accueil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --primary-dark: #004c99;
+            --secondary-color: #00509e;
+            --accent-color: #ffa500;
+            --success-color: #22c55e;
+            --bg-primary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            color: white;
+            box-shadow: var(--shadow-xl);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-container svg {
+            width: 60px;
+            height: 60px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+
+        .modes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .mode-card {
+            background: var(--bg-primary);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .mode-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mode-card:hover .mode-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .mode-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .mode-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-features {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .mode-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .mode-features li:before {
+            content: "✓";
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .mode-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .mode-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .mode-button:active {
+            transform: translateY(0);
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            color: white;
+            text-align: center;
+        }
+
+        .info-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .info-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .modes-container {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-card {
+                padding: 2rem;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 5L55 20V40L30 55L5 40V20L30 5Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M30 15L45 25V35L30 45L15 35V25L30 15Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h1>Boeing 777</h1>
+            <p class="subtitle">Formation Technique & QCM</p>
+        </div>
+
+        <div class="modes-container">
+            <!-- Mode Quiz -->
+            <div class="mode-card" onclick="window.location.href='quiz.html'">
+                <span class="badge">Populaire</span>
+                <div class="mode-icon">🎯</div>
+                <h2 class="mode-title">Mode Quiz</h2>
+                <p class="mode-description">
+                    Testez vos connaissances avec des QCM interactifs
+                </p>
+                <div class="mode-features">
+                    <ul>
+                        <li>Questions par catégorie ATA</li>
+                        <li>Timer et score en temps réel</li>
+                        <li>Feedback immédiat</li>
+                        <li>Statistiques détaillées</li>
+                        <li>Historique des résultats</li>
+                    </ul>
+                </div>
+                <button class="mode-button">
+                    Commencer le Quiz →
+                </button>
+            </div>
+
+            <!-- Mode Révision -->
+            <div class="mode-card" onclick="window.location.href='revision.html'">
+                <span class="badge">Nouveau</span>
+                <div class="mode-icon">📚</div>
+                <h2 class="mode-title">Mode Révision</h2>
+                <p class="mode-description">
+                    Consultez vos notes et schémas techniques par ATA
+                </p>
+                <div class="mode-features">
+                    <ul>
+                        <li>Notes de cours organisées</li>
+                        <li>Schémas techniques détaillés</li>
+                        <li>Navigation par ATA</li>
+                        <li>Disponible hors ligne</li>
+                        <li>Format optimisé mobile</li>
+                    </ul>
+                </div>
+                <button class="mode-button">
+                    Accéder aux Révisions →
+                </button>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>💡 Conseil d'utilisation</h3>
+            <p>
+                Utilisez le <strong>Mode Révision</strong> pour apprendre et mémoriser les concepts,
+                puis testez vos connaissances avec le <strong>Mode Quiz</strong> pour valider votre progression.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
