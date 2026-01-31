@@ -96,7 +96,7 @@ const revisionData = [
             }
         ]
     },
-    {
+  {
         code: "ATA 22",
         name: "Auto Flight",
         notes: `
@@ -156,7 +156,7 @@ const revisionData = [
 <p><strong>Tests MAT :</strong> ATA 22 ground tests. AIMS Dx ou Gx → teste 2 servo-moteurs.</p>
 
 <h3>🔧 RÉSUMÉ MÉCANICIEN</h3>
-<p><strong>INTERCHANGEABLES :</strong> AFDC Gx ⟷ AFDC Dx (3 softs charger) | Servo-moteurs back drives (même côté uniquement)</p>
+<p><strong>ARCHITECTURE :</strong> 3 AFDC (Gx, Central, Dx) avec 3 softs à charger | Servo-moteurs back drives (même côté uniquement)</p>
 <p><strong>DISPATCH :</strong> AP pas engageable sol après 60 kts | PFC opérationnels obligatoire | Automanette pas WARNING si panne | MCP 2 canaux : 1 suffit (LANE A/B FAULT OK)</p>
 <p><strong>TESTS :</strong> MAT ATA 22 fonctions spéciales (commutation antennes ILS) | MAT ground tests (AP + Autothrottle 2 servo) | Test depuis AIMS Dx ou Gx</p>
 <p><strong>RÈGLES :</strong> B/P déconnexion manche série | Barre blanche MCP coupe AP + servo (plus protection) | 3 AFDC engagés 1500 ft : 6 back drives | Croisière 2 servo | Approche/TO 6 servo</p>
