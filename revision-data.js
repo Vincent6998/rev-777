@@ -542,11 +542,7 @@ const revisionData = [
             {
                 url: "assets/images/ata21/ac-pack-clg.jpg",
                 caption: "Pack CLG and Mix Manifold Temp Control"
-            }
-        ]
-    }
-];
-    ,
+            },
     {
         code: "ATA 22",
         name: "Auto Flight",
