@@ -546,3 +546,181 @@ const revisionData = [
         ]
     }
 ];
+    ,
+    {
+        code: "ATA 22",
+        name: "Auto Flight",
+        notes: `
+<h3>🎯 AFDS - Autopilot Flight Director System</h3>
+
+<h4>Composition</h4>
+<p><strong>3 calculateurs AFDC :</strong> AFDC Gx, AFDC Central, AFDC Dx (<strong>3 softs à charger</strong>)</p>
+<p><strong>But :</strong> Assistance directeur de vol + pilotage automatique</p>
+
+<h4>⚠️ Règles engagement AP</h4>
+<p><strong>Après 60 kts :</strong> On ne peut PAS engager AP au sol</p>
+<p><strong>Interdit phase décollage</strong> jusqu'à déjaugeage</p>
+<p>AP peut être engagé toutes phases vol sauf décollage jusqu'à déjaugeage</p>
+
+<h4>Engagement Directeur de Vol</h4>
+<p>Switchs chaque côté <strong>MCP</strong> pour engager directeur vol</p>
+<p><strong>Si AP engagé sans FD :</strong> Engagement mode latéral (cap) + vertical (vario)</p>
+<p><strong>2 cibles :</strong> Latérale (cap) | Verticale (vario)</p>
+
+<h4>🔧 Engagement AP (P/B MCP)</h4>
+<p><strong>B/P AP Dx ou Gx</strong> du MCP :</p>
+<p>→ Alimentation <strong>3 AFDC</strong> connectés aux <strong>BUS Flight Control</strong></p>
+<p>→ <strong>B/P Dx :</strong> Référence barométrique <strong>EFFIS Dx</strong></p>
+<p>→ <strong>B/P Gx :</strong> Référence barométrique <strong>EFFIS Gx</strong></p>
+
+<h4>TAC - Thrust Assymetry Compensation</h4>
+<p>Dans commandes vol électriques. Agit sur <strong>dérive</strong> pour neutraliser dissymétrie.</p>
+
+<h3>🎮 Axes AP & Back Drives Actuators</h3>
+
+<h4>AP 2 axes (phases normales)</h4>
+<p><strong>Toutes phases vol sauf décollage/atterrissage :</strong> 2 axes (ailerons + profondeur)</p>
+
+<h4>AP 3 axes (décollage/atterrissage)</h4>
+<p><strong>Décollage et atterrissage :</strong> 3 axes (ailerons + profondeur + direction)</p>
+
+<h4>🔧 Servo-moteurs (Back Drives Actuators)</h4>
+<p><strong>6 servo-moteurs totaux :</strong> 2 par système (manche, volant, palonniers)</p>
+<p><strong>AFDC Gx :</strong> Utilise 3 servo-moteurs côté Gx</p>
+<p><strong>AFDC Dx :</strong> Utilise 3 servo-moteurs côté Dx</p>
+
+<h4>Fonctionnement servo-moteurs</h4>
+<p><strong>En croisière (AFDC Dx) :</strong> 1 servo volant + 1 servo manche actifs (<strong>2 en vol</strong>)</p>
+<p><strong>En approche/Take Off (AFDC Gx + Dx) :</strong> 2 servo volant + 2 servo manche + 2 servo palonniers actifs (<strong>6 à l'atterrissage</strong>)</p>
+
+<h4>🔧 Rôle Back Drives</h4>
+<p>AP engagé → volant, manche, palonniers se déplacent pour <strong>simuler</strong> ce que fait AP</p>
+<p><strong>⚠️ Donnent image déplacement gouvernes mais NE LES COMMANDENT PAS</strong></p>
+
+<h4>Basculement AFDC</h4>
+<p><strong>Mise sous tension :</strong> AFDC Dx maître</p>
+<p><strong>À chaque désengagement AP :</strong> Basculement sur autre AFDC</p>
+<p><strong>AP engagé à 1500 ft :</strong> Engagement 3 calculateurs AFDC → 6 back drives actuators actifs</p>
+
+<h3>🎛️ Commande Gouvernes</h3>
+<p><strong>AP engagé :</strong> Commandes vol agissent sur surfaces <strong>indépendamment de ce qui est affiché</strong></p>
+<p>Passage par <strong>PFC (Primary Flight Control)</strong></p>
+<p><strong>AFDC donnent ordres aux PFC</strong></p>
+<p>Calculateurs qui commandent gouvernes : <strong>ACE (Actuator Control Electronic)</strong></p>
+<p><strong>⚠️ On ne peut engager AP que si PFC opérationnels</strong></p>
+
+<h3>🎛️ MCP - Mode Control Panel</h3>
+<p><strong>Ne passe PAS par OPAS</strong></p>
+<p><strong>Interface principale</strong> entre équipage et :</p>
+<p>AP (autopilot) | FD (flight director) | TM (thrust management) | FM (flight management)</p>
+
+<h4>L NAV & V NAV</h4>
+<p><strong>L NAV :</strong> S'engage à <strong>50 ft</strong></p>
+<p><strong>V NAV :</strong> S'engage à <strong>400 ft</strong></p>
+
+<h4>Architecture MCP</h4>
+<p><strong>2 canaux</strong> (micro-processeur), alimentation indépendante + 1 contrôleur</p>
+<p><strong>Si 1 canal défaut :</strong> Message <strong>LANE A</strong> ou <strong>LANE B FAULT</strong></p>
+
+<h3>🔧 AFDC - Détails techniques</h3>
+
+<h4>Alimentation</h4>
+<p><strong>2 alimentations :</strong></p>
+<p>1 normale | 1 <strong>HOT BAT BUS</strong> secours (affichage pannes)</p>
+
+<h4>Architecture</h4>
+<p><strong>3 microprocesseurs</strong></p>
+
+<h4>🔧 Déconnexion AP</h4>
+<p><strong>B/P déconnexion AP sur manche :</strong> Montés en <strong>série</strong></p>
+<p><strong>Barre blanche MCP :</strong> Coupe alimentation AP + alimentation servo-moteurs</p>
+<p><strong>⚠️ Plus de protection back angle</strong></p>
+
+<h4>🔧 Antennes ILS</h4>
+<p><strong>Antenne radôme :</strong> Suivi <strong>non précis</strong> du glide</p>
+<p><strong>Antenne portes T AV :</strong> Suivi <strong>précis</strong> du glide</p>
+
+<h4>🔧 Tests MAT</h4>
+<p><strong>Fonctions spéciales ATA 22 :</strong> Commutation antennes dans AFDC</p>
+<p><strong>Ground test ATA 22 :</strong> Autres tests</p>
+
+<h3>⚡ TMCS - Thrust Management Computing System</h3>
+
+<h4>Vue d'ensemble</h4>
+<p><strong>Automanette utilisable toutes phases vol</strong></p>
+<p><strong>Implanté dans :</strong> CPM BASIC ou ACMS</p>
+<p><strong>Interface utilisateur :</strong> MCP</p>
+
+<h4>5 modes Autothrottle</h4>
+<p><strong>THR REF :</strong> Poussée fixe</p>
+<p><strong>THR :</strong> Poussée variable</p>
+<p><strong>SPEED :</strong> Automanette gère vitesse avion</p>
+<p><strong>IDLE :</strong> Ralenti vol</p>
+<p><strong>HOLD :</strong> Désengagement temporaire</p>
+<p>Les 5 modes s'affichent dans <strong>PFD</strong></p>
+
+<h4>Architecture servo-moteurs</h4>
+<p><strong>2 servo-moteurs (1 par manette)</strong></p>
+<p>Données en <strong>ARINC 429</strong> via <strong>IOM</strong></p>
+
+<h4>🔧 Engagement système</h4>
+<p><strong>Condition :</strong> Système armé au MCP (<strong>B/P A/T ARM</strong>)</p>
+
+<h4>Engagement auto</h4>
+<p><strong>V NAV</strong> ou <strong>FLT LEV CHANGE</strong></p>
+
+<h4>Engagement manuel</h4>
+<p>Par switchs <strong>TO/GA</strong> (palettes sur manettes)</p>
+
+<h4>🔧 Déconnexion</h4>
+<p>Switchs sur <strong>côtés boules manettes</strong> de poussée</p>
+
+<h4>⚠️ Points importants</h4>
+<p><strong>Automanette ne déclenche PAS message WARNING</strong></p>
+
+<h4>🔧 Tests MAT</h4>
+<p><strong>MAT ATA 22 menu ground tests</strong></p>
+<p>Depuis armoire AIMS Dx ou Gx → teste <strong>2 servo-moteurs</strong></p>
+
+<h3>🔧 RÉSUMÉ MÉCANICIEN ATA 22</h3>
+
+<h4>✅ INTERCHANGEABLES</h4>
+<p><strong>AFDC Gx ⟷ AFDC Dx</strong> (3 softs à charger)</p>
+<p><strong>Servo-moteurs back drives</strong> (même côté uniquement)</p>
+
+<h4>🔧 INFOS DISPATCH</h4>
+<p><strong>AP pas engageable sol après 60 kts</strong></p>
+<p><strong>PFC opérationnels obligatoire</strong> pour engagement AP</p>
+<p><strong>Automanette pas de WARNING</strong> si panne</p>
+<p><strong>MCP 2 canaux :</strong> 1 canal suffit (LANE A ou B FAULT acceptable dispatch)</p>
+
+<h4>🔧 TESTS TERRAIN</h4>
+<p><strong>MAT ATA 22 fonctions spéciales :</strong> Commutation antennes ILS</p>
+<p><strong>MAT ATA 22 ground tests :</strong> Tests AP + Autothrottle (2 servo-moteurs)</p>
+<p><strong>Test depuis AIMS Dx ou Gx</strong></p>
+
+<h4>⚠️ RÈGLES SÉCURITÉ</h4>
+<p><strong>B/P déconnexion AP manche :</strong> Montés série</p>
+<p><strong>Barre blanche MCP :</strong> Coupe alimentation AP + servo-moteurs (plus protection back angle)</p>
+<p><strong>3 AFDC engagés à 1500 ft :</strong> 6 back drives actifs</p>
+<p><strong>Croisière :</strong> 2 servo-moteurs | <strong>Approche/TO :</strong> 6 servo-moteurs</p>
+
+<h4>🔧 ARCHITECTURE CLÉS</h4>
+<p><strong>AFDC :</strong> 3 microprocesseurs + 2 alimentations (normale + HOT BAT BUS)</p>
+<p><strong>MCP :</strong> 2 canaux micro-processeur + 1 contrôleur</p>
+<p><strong>Antennes ILS :</strong> Radôme (non précis) | Portes T AV (précis)</p>
+<p><strong>Basculement AFDC :</strong> À chaque désengagement AP</p>
+
+<h4>🔧 COMMANDES GOUVERNES</h4>
+<p><strong>AFDC → PFC → ACE → Gouvernes</strong></p>
+<p>Back drives actuators simulent mouvements mais <strong>ne commandent PAS gouvernes</strong></p>
+        `,
+        schemas: [
+            {
+                url: "assets/images/ata22/afds-system.jpg",
+                caption: "AFDS - Autopilot Flight Director System Architecture"
+            }
+        ]
+    }
+];
+
