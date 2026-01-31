@@ -4,180 +4,541 @@ const revisionData = [
         name: "Air Conditioning & Pressurization",
         notes: `
 <h3>📋 Commande et Contrôle</h3>
-<p>Commande en <strong>P5 via OPAS</strong> puis <strong>ARINC 629</strong>.</p>
-<p><strong>5 fonctions :</strong> Pack flow, Pack cooling, Trim air, Zone Temp, Recirculation</p>
+<p>Commande P5 via OPAS puis ARINC 629. <strong>5 fonctions :</strong> Pack flow, Pack cooling, Trim air, Zone Temp, Recirculation.</p>
 
 <h3>🎛️ CTC - Cabin Temperature Controllers</h3>
-<p><strong>2 CTC indépendants :</strong> CTC DX (pack Dx), CTC Gx (pack Gx)</p>
-<p><strong>Règle ETOPS :</strong> On ne croise jamais les CTC ni les ASCPC</p>
-<p>Alimentés par <strong>XFR BUS</strong>, action <strong>analogique</strong> sur les packs</p>
-<p><strong>Si CTC défaut :</strong> ASCPC prend le relais avec <strong>LOWER FLOW CONTROL VALVE</strong></p>
-<p>Reset : <strong>AIR COND RESET</strong></p>
+<p><strong>2 CTC indépendants :</strong> CTC DX (pack Dx), CTC Gx (pack Gx). Alimentés par <strong>XFR BUS</strong>, action <strong>analogique</strong> sur packs.</p>
+<p><strong>⚠️ Règle ETOPS :</strong> On ne croise JAMAIS les CTC ni les ASCPC entre eux.</p>
+<p><strong>Si CTC défaut :</strong> ASCPC prend relais avec <strong>LOWER FLOW CONTROL VALVE</strong> en priorité.</p>
+<p><strong>🔧 Reset :</strong> Switch <strong>AIR COND RESET</strong> en P5.</p>
 
 <h3>⚙️ ASCPC - Air Supply Cabin Pressure Control</h3>
-<p><strong>2 ASCPC :</strong> Gx (pack Gx), Dx (pack Dx). Gèrent les packs et surveillent T° (<strong>Pack Trip</strong>)</p>
-<p>Contrôle débit via <strong>Manifold Flow Sensor</strong> (backup si perte Pack Flow Sensor)</p>
+<p><strong>2 ASCPC indépendants :</strong> Gx (pack Gx), Dx (pack Dx). Gèrent packs et surveillent T° (<strong>Pack Trip</strong>).</p>
+<p>Contrôle débit via <strong>Manifold Flow Sensor</strong> (backup si perte Pack Flow Sensor).</p>
 
-<h4>Pack Flow Schedule</h4>
+<h4>Pack Flow Schedule (5 niveaux)</h4>
 <p><strong>0 :</strong> Pas d'air (dém moteur) | <strong>1-4 :</strong> Moins d'air avec altitude | <strong>2 :</strong> 1 seul pack | <strong>4 :</strong> Maintien pressurisation</p>
-<p>Si recirculating Fan panne → augmentation débit pack</p>
+<p><strong>🔧 DISPATCH :</strong> Si recirculating Fan panne → augmentation débit pack automatique (acceptable dispatch).</p>
 
-<h4>Mode Backup</h4>
-<p>ASCPC = Backup CTC si <strong>2 canaux CTC HS</strong></p>
-<p><strong>3 signaux :</strong> Digital, Analogique, Pneumatique</p>
-<p>Backup : flow control, T° sortie compresseur, T° sortie pack</p>
+<h4>Mode Backup ASCPC</h4>
+<p>ASCPC = Backup CTC si <strong>2 canaux CTC HS</strong>. <strong>3 signaux :</strong> Digital, Analogique, Pneumatique.</p>
+<p>Backup : flow control, T° sortie compresseur, T° sortie pack.</p>
 
-<h4>Points clés</h4>
-<p>Éléments interchangeables sauf tuyaux</p>
-<p>Arrêt pack : attendre <strong>2 min</strong> (déshumidification)</p>
-<p>APU au sol : <strong>2 packs en route</strong></p>
+<h4>🔧 Points MAINTENANCE</h4>
+<p><strong>✅ INTERCHANGEABLE :</strong> Tous les éléments entre pack n°1 et 2, SAUF les tuyaux.</p>
+<p><strong>⏱️ Arrêt pack sol :</strong> Attendre <strong>2 minutes</strong> pour arrêt complet (déshumidification pack).</p>
+<p><strong>⚠️ APU sol :</strong> Mettre les <strong>2 packs en route</strong> obligatoire.</p>
 
-<h3>🔧 ECSMC</h3>
-<p>2 cartes <strong>(P85/P84)</strong>. DX primaire, GX backup</p>
-<p>Gère : distribution, équipement cooling, cargo heating, supplemental heating</p>
+<h3>🔧 ECSMC - Environmental Control System Miscellaneous Cards</h3>
+<p>2 cartes (P85/P84). <strong>DX primaire, GX backup</strong> à chaque mise sous tension.</p>
+<p>Gère : distribution/ventilation, equipment cooling, cargo heating, supplemental heating.</p>
 
-<h3>❄️ Pack Flow Control Valves</h3>
-<p><strong>4 valves (2 par pack)</strong>. Commandées par CTC, backup ASCPC</p>
-<p><strong>UPPER :</strong> Ouverte basse altitude, fermée à <strong>26000 ft</strong></p>
-<p><strong>LOWER :</strong> Ouverte à partir <strong>26000 ft</strong> → passage dans <strong>Ozone converter</strong></p>
-<p><strong>Règle :</strong> Les 2 ne fonctionnent JAMAIS ensemble</p>
-<p>Voyant <strong>pack OFF</strong> si 2 vannes fermées</p>
+<h3>❄️ Pack Flow Control Valves (4 valves)</h3>
+<p><strong>2 par pack.</strong> Régulent débit air vers pack. Commandées CTC, backup ASCPC.</p>
+<p><strong>✅ IDENTIQUES ET INTERCHANGEABLES</strong> entre elles et entre packs.</p>
 
-<h4>Torque Motors</h4>
-<p><strong>2 par valve :</strong> 1 CTC (régul position), 1 ASCPC (backup)</p>
-<p>Si pas alimentés → vannes <strong>FULL OPEN</strong></p>
+<h4>Upper Flow Control Valve</h4>
+<p>Ouverte basse altitude, <strong>fermée à 26000 ft</strong>.</p>
 
-<h4>Fermeture si</h4>
-<p>Pack outlet overheat <strong>88°C</strong> | Compresseur discharge overheat <strong>252°C</strong> | Pack Fail | Flow schedule 0</p>
+<h4>Lower Flow Control Valve</h4>
+<p>Ouverte à partir <strong>26000 ft</strong>. Passage air dans <strong>Ozone converter</strong>.</p>
 
-<h3>🌡️ Composants Pack</h3>
-<p><strong>Ozone Converter :</strong> Transforme O3 en O2 haute altitude. Pas de passage < 26000 ft</p>
-<p><strong>RAM Inlet Door :</strong> Ouverte sol, fermée vol. Régule T° sortie compresseur</p>
-<p><strong>ACM :</strong> 1 compresseur + 2 turbines (T1/T2) + inlet fan. Même arbre, palier à air</p>
-<p><strong>Condenseur/Reheater :</strong> Retire l'eau + réchauffe l'air</p>
-<p><strong>Low Limit Valve :</strong> Bypass turbine T1. Ferme si T° sortie T1 < <strong>1°C</strong></p>
-<p><strong>Second Stage Bypass Valve :</strong> Bypass turbine T2. Régule T° sortie pack</p>
-<p><strong>Economy Cooling Valve :</strong> Ouverte haute altitude (<strong>25000 ft</strong>). Air bypass ACM. Fail safe open</p>
-<p><strong>Conditioned Air Check Valve :</strong> Anti-retour sortie pack. Évite perte pressurisation</p>
+<h4>⚠️ Règle importante</h4>
+<p><strong>Les 2 ne fonctionnent JAMAIS ensemble.</strong> Si UPPER ouverte → LOWER fermée.</p>
+<p>Info transmise par 2 proximity switchs.</p>
+<p><strong>Voyant pack OFF :</strong> 2 vannes fermées détectées CLOSE par CTC.</p>
 
-<h3>🌡️ Températures & Sondes</h3>
-<p><strong>11 sondes totales :</strong> 9 CTC + 2 ASCPC (sortie compresseur/pack)</p>
-<p><strong>IMMTE :</strong> 4 sondes (2 par CTC). T° référence sortie pack. Diff maxi <strong>5°</strong></p>
+<h4>🔧 Torque Motors (2 par valve)</h4>
+<p><strong>1 CTC :</strong> Régulation position | <strong>1 ASCPC :</strong> Ferme upper, régule lower en backup</p>
+<p><strong>✅ INTERCHANGEABLES</strong> entre eux.</p>
+<p><strong>⚠️ Si pas alimentés :</strong> Vannes <strong>FULL OPEN</strong> (fail safe).</p>
+<p><strong>🔧 DISPATCH :</strong> 1 plug pour tolérance upper en fermeture.</p>
 
-<h4>T° critiques</h4>
-<p><strong>Sortie compresseur :</strong> < 171° (régul RAM door) | 171-179° (RAM full open) | 179-232° (baisse débit) | > 232° (<strong>Pack trip</strong>)</p>
-<p><strong>Sortie pack :</strong> CTC <strong>88°C</strong> maxi | ASCPC <strong>96°C</strong> maxi</p>
+<h4>Pack Flow Sensor</h4>
+<p><strong>2 differential pressure sensors :</strong> CTC / ASCPC. <strong>1 inlet pressure sensor</strong> CTC.</p>
+<p><strong>✅ INTERCHANGEABLES</strong> avec autres sondes en amont.</p>
+<p>Si CTC perd info T° → demande à ASCPC.</p>
 
-<h4>Modes spéciaux</h4>
-<p><strong>STANDBY COOLING :</strong> ACM fail, sondes condenser fail, Economy valve open → air direct par check valve</p>
-<p><strong>ECONOMY COOLING :</strong> Vol haute altitude + ACM OK + T° condenser valide + <strong>TAT < 7°</strong></p>
+<h4>Fermeture Flow Control Valve si</h4>
+<p>Pack outlet overheat <strong>88°C</strong> | Compresseur discharge <strong>252°C</strong> | Pack Fail | Flow schedule 0</p>
+<p><strong>⚠️ ATTENTION :</strong> Flow Control Valve <strong>ouverte</strong> si pas de jus + pression pneumatique présente.</p>
 
-<h3>🌡️ Temperature Control</h3>
-<p><strong>CTC Dx :</strong> Zones B-D-F + soute AV | <strong>CTC Gx :</strong> Zones A-C-E + Flight Deck</p>
-<p>Commandes P5 : 2 P/B (ON/FAULT), Rotateurs <strong>18-29°</strong> (F/D et cabine), <strong>4-27°</strong> (soute AV)</p>
-<p><strong>T° Master :</strong> ~24° poste, ajustement cabine <strong>±6°</strong> via CSCP/CACP</p>
+<h3>🌡️ Ozone Converter</h3>
+<p>Transforme O3 en O2 haute altitude. <strong>Pas de passage < 26000 ft</strong> (passage par upper).</p>
+<p>P/B P5 commande ouverture. CTC régule débit selon T° Inlet Primary Heat Exchanger.</p>
+<p><strong>Si plus de débit dans Pack Flow Sensor → Pack Trip</strong></p>
 
-<h4>Protections</h4>
-<p><strong>71°</strong> gaine → ferme modulating valve</p>
+<h3>🔧 Composants Pack - COOLING</h3>
+
+<h4>RAM Inlet Door</h4>
+<p>Commandée par <strong>CTC seulement</strong>. Ouverte sol, fermée vol.</p>
+<p>Régulée pour T° sortie compresseur. Fermeture possible par MAT.</p>
+
+<h4>Economy Cooling Check Valve</h4>
+<p>Bypass ACM au démarrage pack, panne ACM, ou en vol (air froid).</p>
+
+<h4>Échangeur Thermique</h4>
+<p>2 échangeurs AIR/AIR refroidis par ram air.</p>
+
+<h4>ACM - Air Cycle Machine</h4>
+<p>1 compresseur + 2 turbines (T1/T2) + inlet fan. Montés sur <strong>même arbre</strong>, <strong>palier à air</strong>.</p>
+<p><strong>⚠️ ATTENTION au sens de rotation !</strong></p>
+
+<h4>Condenseur/Reheater</h4>
+<p><strong>2 fonctions :</strong> Retire l'eau + Réchauffe l'air (donne énergie).</p>
+
+<h4>Water Collector & Spray Nozzle</h4>
+<p>Gestion eau condensée.</p>
+
+<h4>🌡️ Sondes température (11 totales)</h4>
+<p><strong>9 pour CTC</strong> + <strong>2 pour ASCPC</strong> (sortie compresseur + sortie pack)</p>
+<p>4 sondes sur Mix Manifold (2 par CTC).</p>
+
+<h4>Low Limit Valve</h4>
+<p>Bypass turbine T1. Régule vitesse rotation turbine (RVDT → info CTC).</p>
+<p><strong>Ferme si T° sortie T1 < 1°C.</strong> Surveille toujours > 1° sortie turbine.</p>
+<p><strong>✅ IDENTIQUE à Bypass Valve - INTERCHANGEABLES</strong></p>
+
+<h4>Second Stage Turbine Bypass Valve</h4>
+<p>Bypass turbine T2. Régule T° sortie pack (RVDT → info CTC).</p>
+<p><strong>✅ INTERCHANGEABLE avec Low Limit Valve.</strong></p>
+<p><strong>🔧 DISPATCH :</strong> Conseillé si Low Limit Valve HS.</p>
+
+<h4>Economy Cooling Valve</h4>
+<p>Commandée ELMS. <strong>Tout ou rien.</strong> Ouverte haute altitude (<strong>25000 ft</strong>, air sec).</p>
+<p>Air ne passe plus par Condenser/Reheater et ACM.</p>
+<p><strong>Vanne fail safe OPEN.</strong></p>
+<p>Quand Economy open → Low Limit + Bypass open aussi.</p>
+
+<h4>Conditioned Air Check Valve</h4>
+<p>Clapet anti-retour sortie pack. <strong>Évite perte pressurisation si fuite pack.</strong></p>
+
+<h4>Economy Cooling Check Valve - Usage</h4>
+<p>Bypass compresseur si : mise en route GTR, mode economy, ACM HS, mode standby.</p>
+
+<h3>🌡️ Indication Température</h3>
+
+<h4>Condenser Inlet Temp Sensor (X2)</h4>
+<p>Pilotage Low Limit Valve.</p>
+
+<h4>IMMTE - Integrated Mix Manifold Temperature</h4>
+<p>4 sondes (2 par CTC). Gestion T° cabine calculée par CTC DX, suivie par CTC GX.</p>
+<p>T° référence sortie pack. <strong>Différence maxi 5°</strong> entre packs.</p>
+
+<h4>2 Températures CRITIQUES</h4>
+<p><strong>T° sortie compresseur :</strong></p>
+<p>< 171° : régul RAM door | 171-179° : RAM full open | 179-232° : baisse débit | <strong>> 232° : PACK TRIP</strong></p>
+<p><strong>T° sortie pack :</strong></p>
+<p>CTC <strong>88°C maxi</strong> | ASCPC <strong>96°C maxi</strong></p>
+
+<h4>STANDBY COOLING MODE</h4>
+<p>Activé si : ACM fail, sondes condenser 1&2 fail, Economy valve failed open + TBV full open</p>
+<p>→ Air passe direct par Check Valve.</p>
+
+<h4>ECONOMY COOLING MODE</h4>
+<p>Activé si : Vol haute altitude + ACM OK + T° condenser valide + <strong>TAT < 7°</strong></p>
+
+<h3>🌡️ TEMPERATURE CONTROL</h3>
+<p><strong>Régulation par CTC seulement.</strong></p>
+
+<h4>Répartition zones</h4>
+<p><strong>CTC Dx :</strong> Zones B-D-F + soute AV</p>
+<p><strong>CTC Gx :</strong> Zones A-C-E + Flight Deck</p>
+
+<h4>Commandes P5</h4>
+<p>2 P/B (ON/FAULT)</p>
+<p>2 Rotateurs : <strong>18-29°</strong> (F/D et cabine) | <strong>4-27°</strong> (soute AV)</p>
+<p>Info OPAS → ARINC 629</p>
+
+<h4>Température Master</h4>
+<p>~24° poste. Ajustement cabine <strong>±6°</strong> via CSCP/CACP.</p>
+
+<h4>Protections température gaine</h4>
+<p><strong>71°</strong> gaine → ferme Modulating Valve correspondante</p>
 <p><strong>88°</strong> gaine → ferme <strong>TRIM AIR PRSOV</strong></p>
-<p><strong>Fault si :</strong> Surchauffe > 88°, perte info pression, défaut 2 canaux CTC</p>
+
+<h4>Mode FAULT - Fermeture TAPRSOV si</h4>
+<p>Surchauffe > 88° | Perte info pression Trim Air Pressure Sensor | Défaut 2 canaux CTC</p>
+<p><strong>🔧 Reset :</strong> P/B P5 ou <strong>AIR COND RESET</strong></p>
+
+<h4>🔧 MAT (Maintenance Access Terminal)</h4>
+<p>Fonction spéciale : ouvrir/fermer RAM AIR INLET DOOR.</p>
+<p><strong>Tests MAT = packs coupés obligatoire.</strong></p>
 
 <h3>🔧 TAPRSOV - Trim Air Pressure Regulating and Shutoff Valve</h3>
-<p><strong>2 vannes (1 par côté)</strong></p>
-<p>CTC régule : pression sortie = pression cabine <strong>+ 5 PSI</strong> (régulation <strong>2-8,5 PSI</strong>)</p>
-<p><strong>Backup ASCPC :</strong> Coupe TAPRSOV si P/B Off, Stall Warning, Pack Flow schedule 4</p>
-<p><strong>Test auto démarrage moteur :</strong> CTC commande full open, vérifie ASCPC peut fermer</p>
-<p>Fail safe <strong>closed</strong>. Si FCV fermée → TAPRSOV fermée</p>
+<p><strong>2 vannes (1 par côté).</strong> CTC Gx (côté Gx), CTC Dx (côté Dx).</p>
+<p>CTC régule : pression sortie = pression cabine <strong>+ 5 PSI</strong> (régulation <strong>2-8,5 PSI</strong>).</p>
+<p>Info par 2 trim air pressure sensors.</p>
+
+<h4>Backup ASCPC</h4>
+<p>ASCPC coupe TAPRSOV (shutoff solenoid) si : P/B Off | Stall Warning | Pack Flow schedule 4</p>
+
+<h4>🔧 Test automatique démarrage moteur</h4>
+<p>CTC commande TAPRSOV <strong>pleine ouverte</strong>, vérifie ASCPC capable de fermer.</p>
+
+<h4>🔧 DISPATCH</h4>
+<p><strong>Fail safe CLOSED.</strong> Dispatch vanne fermée possible.</p>
+<p>Si FCV fermée (pack trip) → TAPRSOV fermée automatique.</p>
 
 <h3>🌡️ TAMV - Trim Air Modulating Valve</h3>
-<p><strong>8 valves (1 par zone) + 1 soute AV</strong>. Régulées par CTC via RVDT</p>
-<p>Si TAMV ouverte > <strong>10%</strong> en panne → fermeture TAPRSOV + pression 2 PSI</p>
-<p><strong>TAMV poste (spéciale) :</strong> Gérée par CTC Gx. Seule commandable en manuel. Seule avec synoptic EICAS</p>
-<p><strong>Mode dégradé (Open Loop) :</strong> Si RVDT panne → régul par Zone Duct Temp Sensor</p>
+<p><strong>8 vannes (1 par zone) + 1 soute AV.</strong> Régulées CTC via RVDT.</p>
+<p><strong>✅ IDENTIQUES ET INTERCHANGEABLES</strong> entre elles.</p>
 
-<h3>🌡️ Sondes</h3>
-<p><strong>Zone Duct Temp Sensor :</strong> 2 par conduit. Anticipation. Si 2 sondes HS → ferme TAMV zone</p>
-<p><strong>Zone Air Temp Sensor :</strong> Sondes cabine. Ventilation par Lav/Galley vent fans</p>
-<p><strong>71°</strong> duct → ferme TAMV zone | <strong>88°</strong> duct → ferme TRIM AIR PRSOV</p>
-<p>TAMV soute AV ouvre si <strong>A/C SOV FWD CARGO</strong> ouverte + lav/gly fans off</p>
+<h4>Protection</h4>
+<p>Si TAMV ouverte > <strong>10%</strong> en panne → ferme TAPRSOV + maintien 2 PSI + ouvre autres TAMV.</p>
 
-<h3>🌀 Recirculation</h3>
-<p><strong>But :</strong> Gagner 50% efficacité packs</p>
-<p><strong>2 FAN Upper</strong> (avant/arrière) identiques | <strong>2 FAN Lower</strong> soute AV (Dx plus gros)</p>
-<p>Surveillés ECSMC, commandés <strong>CTC Dx</strong> (CTC Gx backup)</p>
-<p>Coupure si feu soute AV. Reset <strong>AIR COND RESET</strong></p>
-<p>Si 1 fan panne → augmente débit pack</p>
+<h4>TAMV Poste (SPÉCIALE)</h4>
+<p>Gérée par <strong>CTC Gx.</strong></p>
+<p><strong>Seule TAMV :</strong> Commandable en manuel | Avec synoptic EICAS</p>
+<p>Si CTC Gx panne : commande manuelle via rotateur possible (ELMS).</p>
 
-<h3>💨 Ventilation</h3>
-<p><strong>Lav/Galley Vent Fan (2) :</strong> Auto dès mise sous tension. Droit permanent, gauche backup. Test Gx 20s. Soute bulk</p>
-<p>Arrêt si <strong>ARM CARGO AFT FIRE</strong></p>
-<p><strong>Bulk Cargo Fan :</strong> Transport animaux. Cargo TEMP Select <strong>HIGH</strong></p>
-<p><strong>Exhaust Fan :</strong> Clim soute AV + AUTO. Éjection FWD OUTFLOW VALVE. Coupé si ARM CARGO FIRE</p>
-<p><strong>Chiller Boost Fan :</strong> Vol (porte 2 GX), Sol (Mix bay). Si TAT < 7° → coupure. Si TAT > 7° sol → ON</p>
+<h4>Mode dégradé (Open Loop)</h4>
+<p>Si RVDT panne → régulation par <strong>Zone Duct Temp Sensor.</strong></p>
 
-<h3>🔥 Climatisation Soute AV</h3>
-<p>1 TAMV (comme zone cabine) + sélecteur propre</p>
-<p><strong>Air Conditioning Shutoff Valve :</strong> Ouvre si Pack On + FWD CARGO A/C AUTO + FIRE not armed + TAMV ouverte</p>
-<p><strong>Air Supply Shutoff Valve (LLAR) :</strong> Sol (PACK GX OFF + GRND BUS + hatch ouvert), Vol (> <strong>25000 ft</strong>)</p>
+<h3>🌡️ Sondes de Température</h3>
 
-<h3>🔥 Réchauffages</h3>
-<p><strong>LLAR :</strong> CTC Gx + ELMS. 2 heaters vol uniquement. Pack left via AIR SHUTOFF VALVE (<strong>25000 ft</strong>)</p>
-<p><strong>CRAH :</strong> 1 heater. Pack ON sol/vol</p>
-<p><strong>Soute AR/Bulk (4 vannes) :</strong> Air chaud pneumatique. 2 vannes série (Pneumatic shutoff + Heat valve T° < 10°). ELMS GX/DX</p>
-<p>Cargo TEMP SELECT : <strong>OFF / LOW (+7°) / HIGH (+21°)</strong></p>
-<p><strong>Shoulder/Foot :</strong> Air pack Gx. Vol uniquement. 2 épaules + 2 pieds</p>
-<p><strong>Door :</strong> 1 heater électrique Girt Bar. Seul testable MAT. Vol + 1 pack</p>
-<p><strong>Soute AV (ELMS) :</strong> Air équipement cooling. Si FWD CARGO A/C OFF → ouvre Diverter/Heat, ferme Vent, arrêt Exhaust</p>
-<p>Si T° ext < 13° : Divert + Inboard liées électriquement, Vent + Forward Cargo inversées</p>
+<h4>Zone Duct Temp Sensor (anticipation)</h4>
+<p><strong>2 par conduit.</strong> Anticipent variations T°.</p>
+<p><strong>✅ INTERCHANGEABLES avec autres sondes en amont.</strong></p>
+<p>Si 2 sondes même Duct HS → ferme TAMV zone.</p>
 
-<h3>❄️ Equipment Cooling</h3>
-<p><strong>4 modes :</strong> FWD cargo A/C (vent), FWD cargo heat (OVR), Eqpt cooling smoke, FWD cargo fire</p>
-<p><strong>Inboard Valve :</strong> Sol clim auto → fermée (air Mix Bay). Vol clim auto → ouverte</p>
-<p><strong>Diverter Valve :</strong> Sol clim auto → ouverte. Fermée si feu, P5 override, perte 2 Low Flow Sensors vol, clim soute AV vol</p>
-<p><strong>Cargo Heat Valve :</strong> Fermée si sol T° > 13° ou clim. Ouverte si fan coupé, réchauffage soute AV</p>
-<p><strong>Vent Valve :</strong> Fermée si feu, fumée, réchauffage soute Av vol</p>
+<h4>Zone Air Temperature Sensor (fonctionnement)</h4>
+<p>Sondes cabine. Info aux 2 canaux CTC (F/D → CTC Gx et Dx).</p>
+<p>Ventilation par aspiration <strong>Lav/Galley vent fans.</strong></p>
+<p>Si sondes cabine panne → régulation par Zone Duct Temp Sensor.</p>
 
-<h3>⚠️ Mode Override</h3>
-<p><strong>En vol, auto si :</strong> Perte 2 flow sensors, fumée soute élec, panne 2 Supply Fan, ARM extinction soute AV, P/B override</p>
-<p><strong>Au sol :</strong> Flow sensor bas débit/surchauffe → MSG EQT COOLING + KLAXON → SUPPLY/VENT FAN OFF + ferme OVERRIDE + démarre CONV SUP CLG FAN</p>
-<p>Reset : Switch EQUIP COOLING P5 ou ECSMC</p>
-<p><strong>ECC :</strong> 2 ECC (Gx/Dx). Secours panne ECSMC vol uniquement. 6 modes changent toutes 60s</p>
-<p><strong>Converter Backup Fan :</strong> Power up test, override, backup gen ON, perte 2 supply fans</p>
-<p><strong>Supply fan :</strong> 2 ventilateurs. Dx primaire, Gx backup</p>
+<h4>Protections gaine</h4>
+<p><strong>71°</strong> duct → ferme TAMV zone</p>
+<p><strong>88°</strong> duct → ferme TRIM AIR PRSOV</p>
+<p>Fonctionnement manuel : plus de commande CTC de TAMV.</p>
 
-<h3>📺 Ventilation IFE</h3>
-<p><strong>2 vannes :</strong> Manifold Shutoff + Overboard Shutoff (ECSMC). 1 ouverte, 1 fermée</p>
-<p>Fermées + arrêt fan si feu ou fumée manifold IFE</p>
-<p><strong>777-300 retrofit :</strong> Plus qu'1 ventil, extraction MIX BAY, fan permanent</p>
+<h4>TAMV Soute AV</h4>
+<p>Ouvre si <strong>A/C SOV FWD CARGO ouverte</strong> + info CTC + lav/gly fans off.</p>
+<p>Si 2 sondes T° soute AV HS → plus de clim soute AV.</p>
 
-<h3>🔧 Différences 777-300</h3>
-<p><strong>OFAR (1 zone) :</strong> CTC Gx. Heaters électriques. Air pack gauche via Air Supply SOV (<strong>25000 ft</strong>). Ferme Air Supply + ouvre Exhaust si feu</p>
-<p><strong>OFCR (3 zones) :</strong> Air Supply SOV ELMS, pas condition 25000 ft. 3 heaters. Si fumée OFCR → reset chillers</p>
-<p>Volets <strong>RAM AIR EXIT</strong> présents mais désactivés</p>
+<h4>Autres capteurs</h4>
+<p>Si différence pression cabine entre 2 ASCPC → info <strong>Remote Cabin Press Sensor</strong> pour lever doute.</p>
+<p><strong>Trim Air Pressure Sensor :</strong> Info pression régulée après TAPRSOV au CTC.</p>
+<p><strong>Muffler :</strong> Diminue bruit.</p>
 
-<h3>🎈 Pressurisation</h3>
-<p><strong>2 ASCPC :</strong> GX Primary, DX Backup</p>
-<p><strong>2 modes :</strong> Fixed Rate Control / Minimum Rate Control</p>
-<p>Preflight Test fin mise en route (test Outflow valves)</p>
-<p><strong>Remote Cabin Pressure :</strong> Mesure pression indépendamment ASCPC, info ELMS</p>
+<h3>🌀 DISTRIBUTION - Recirculation</h3>
+<p><strong>But :</strong> Gagner 50% efficacité packs.</p>
+
+<h4>Recirculating FAN Upper (2)</h4>
+<p>1 avant + 1 arrière. <strong>✅ IDENTIQUES ET INTERCHANGEABLES</strong></p>
+
+<h4>Recirculating FAN Lower (2)</h4>
+<p>Soute avant. <strong>⚠️ NON IDENTIQUES</strong> (Dx plus gros car prise soute AV).</p>
+
+<h4>Contrôle</h4>
+<p>Surveillés <strong>ECSMC</strong>, commandés <strong>CTC Dx</strong> (CTC Gx backup).</p>
+<p>Surveillé par : ECMCS (surchauffe) + ELMS (consommation courant).</p>
+
+<h4>🔧 DISPATCH & Commandes</h4>
+<p>Addition air recyclée : 50% efficacité+ packs.</p>
+<p>Coupure si <strong>feu soute AV.</strong></p>
+<p>2 Commandes P5 (1 LOWER, 1 UPPER).</p>
+<p><strong>🔧 Reset :</strong> Switch <strong>AIR COND RESET</strong> P5.</p>
+<p><strong>✅ DISPATCH :</strong> Si 1 fan panne → augmentation débit pack automatique (acceptable).</p>
+
+<h3>💨 VENTILATION (Système automatique)</h3>
+
+<h4>Lav/Galley Vent Fan (2)</h4>
+<p>Auto dès mise sous tension (si pas overheat, pas feu).</p>
+<p><strong>Droit permanent, gauche backup.</strong> Power Up Test Gx 20s avant Dx.</p>
+<p>Situés <strong>soute bulk.</strong></p>
+<p>Ventilent : galleys, lavatories, sondes T° Zone, équipements étagères cabine AR (E11, E12, E7).</p>
+<p><strong>Arrêt si ARM CARGO AFT FIRE.</strong></p>
+
+<h4>Bulk Cargo Ventilation Fan</h4>
+<p>Transport animaux. Cargo TEMP Select <strong>HIGH.</strong></p>
+<p><strong>Arrêt si ARM CARGO AFT FIRE.</strong></p>
+
+<h4>Exhaust Fan</h4>
+<p>Mise en route : clim soute AV + switch AUTO.</p>
+<p>Récup air fond soute → éjection <strong>FWD OUTFLOW VALVE.</strong></p>
+<p><strong>FWD Cargo A/C Shutoff Valve (A/C SOV) :</strong> Contrôle air mix manifold vers soute AV.</p>
+<p><strong>Coupé si :</strong> ARM CARGO FWD/AFT FIRE ou réchauffage soute AV.</p>
+
+<h4>Chiller Boost Fan</h4>
+<p>Extraction air chaud Chillers.</p>
+<p><strong>Vol :</strong> Porte 2 GX | <strong>Sol :</strong> Mix bay</p>
+<p>Si TAT < 7° ou ARM CARGO FIRE → coupure</p>
+<p>Si TAT > 7° sol → ON</p>
+<p><strong>2 vannes :</strong> Crown (vol, porte 2 GX) | Lower (sol, Mix bay)</p>
+
+<h4>⚠️ Règle incendie</h4>
+<p><strong>ARM Extinction Incendie → arrêt auto ventilation zone concernée.</strong></p>
+
+<h3>🔥 CLIMATISATION</h3>
+
+<h4>Soute Avant</h4>
+<p>1 TAMV (fonctionne comme zone cabine) + sélecteur propre.</p>
+
+<h4>Air Conditioning Shutoff Valve</h4>
+<p>Ouvre si : Pack On + FWD CARGO A/C AUTO + FIRE not armed + TAMV ouverte</p>
+<p>Située en aval. Info position surveillée <strong>ECMCS Dx.</strong></p>
+
+<h4>Air Supply Shutoff Valve (LLAR)</h4>
+<p>Alimente LLAR.</p>
+<p><strong>Sol :</strong> PACK GX OFF + GRND HANDLING BUS alimentée + hatch ouvert</p>
+<p><strong>Vol :</strong> > <strong>25000 ft</strong></p>
+
+<h3>🔥 RÉCHAUFFAGES</h3>
+
+<h4>Réchauffage LLAR</h4>
+<p>Géré <strong>CTC Gx</strong> + alimenté <strong>ELMS.</strong></p>
+<p><strong>2 heaters vol uniquement</strong> + LLAR SOV Relay OPEN.</p>
+<p>Pack left via AIR SHUTOFF VALVE (s'ouvre <strong>25000 ft</strong>).</p>
+<p>Sol : ouverte dès pack coupé.</p>
+<p>2 sondes T° → info CTC Gx.</p>
+<p>Trappe accès LLAR fermée ou test incendie = valve fermée.</p>
+<p>Voyant dans LLAR à l'entrée.</p>
+
+<h4>Réchauffage CRAH</h4>
+<p>1 heater. Pack ON sol ou vol.</p>
+
+<h4>🔧 777-300 spécifique</h4>
+<p>Exhaust valve fumée OFCR/OFAR → lav/gly vent fans.</p>
+<p><strong>OFAR :</strong> Mêmes limitations 200. Heaters auto si T° air duct < 4°C.</p>
+<p><strong>OFCR :</strong> Pas limitation altitude.</p>
+
+<h4>Réchauffage Soute AR & Bulk (4 vannes)</h4>
+<p>Air chaud conduit pneumatique. Régulation par T° Sensor → info ECMCS.</p>
+<p><strong>2 vannes série (tout ou rien) :</strong></p>
+<p>Pneumatic system air (shutoff) | Heat valve si T° < 10° (Temp CTL)</p>
+<p>Commandées <strong>ELMS GX/DX.</strong></p>
+<p>Sélecteur Cargo TEMP SELECT : <strong>OFF | LOW (+7°) | HIGH (+21°)</strong></p>
+
+<h4>Réchauffeur Shoulder/Foot</h4>
+<p>Air pack Gx. <strong>Vol uniquement.</strong> 2 épaules + 2 pieds.</p>
+
+<h4>Réchauffage Door</h4>
+<p>1 heater électrique Girt Bar. Réchauffe air conduit clim.</p>
+<p><strong>🔧 Seul heater testable MAT.</strong> Condition : vol + 1 pack route.</p>
+
+<h4>Réchauffage Galets</h4>
+<p>1 Pack en route.</p>
+
+<h4>Réchauffage Soute AV (géré ELMS)</h4>
+<p>Air equipement cooling soute électronique.</p>
+<p>Réchauffage si <strong>pas clim soute AV.</strong></p>
+<p>Sélecteur P5 <strong>FWD CARGO A/C OFF.</strong></p>
+<p>Ouvre Diverter + Heat Valve | Ferme Vent Valve | Arrêt Exhaust Fan (ELMS)</p>
+<p>Diverter Valve et Cargo Heat Valve marchent ensemble.</p>
+<p>Vent Valve et Equip Inb Valve marchent ensemble.</p>
+
+<h4>Si T° extérieure < 13°</h4>
+<p><strong>Divert Valve et Inboard Valve :</strong> Liées électriquement</p>
+<p><strong>Vent valve et Forward Cargo :</strong> Fonctionnement inversé</p>
+<p><strong>🔧 Surchauffe détectée :</strong> Fermeture vannes → <strong>reset par MAT</strong></p>
+
+<h3>❄️ EQUIPMENT COOLING</h3>
+
+<h4>4 modes fonctionnement</h4>
+<p>FWD cargo A/C mode (vent) | FWD cargo heat mode (OVR) | Eqpt cooling smoke mode | FWD cargo fire</p>
+
+<h4>Equipment Cooling Inboard Valve</h4>
+<p><strong>Sol clim auto :</strong> Fermée (air → Mix Bay)</p>
+<p><strong>Vol clim auto :</strong> Ouverte (même si perte 1 Low Flow Sensor)</p>
+
+<h4>Equipment Cooling Diverter Valve</h4>
+<p><strong>Sol clim auto :</strong> Ouverte</p>
+<p><strong>Fermée si :</strong> Feu | Switch P5 override | Perte 2 Low Flow Sensor vol | Clim soute AV vol</p>
+
+<h4>Cargo Heat Valve</h4>
+<p><strong>Fermée si :</strong> Sol T° > 13° | Clim active</p>
+<p><strong>Ouverte si :</strong> Fan coupé | Réchauffage soute AV vol | Réchauffage soute AV + TAT < 10° sol</p>
+
+<h4>Vent Valve</h4>
+<p><strong>Fermée si :</strong> Feu | Fumée | Réchauffage soute Av vol | Réchauffage soute Av + TAT < 10° sol</p>
+
+<h4>Override Valve</h4>
+<p>Carte <strong>ECSMC Dx.</strong></p>
+
+<h4>Soute Arrière</h4>
+<p>Ventilation racks E13-E14 (Rack SATCOM) par Lav/Galley vent fans.</p>
+<p>Si 2 Lav/Galley fans HS → démarrage <strong>2 SATCOM backup fans</strong> intégrés (tempo 10s).</p>
+<p>Cartes ECSMC : Dx primaire, Gx standby.</p>
+<p>Air rejetée <strong>Outflow valve Aft.</strong></p>
+
+<h4>Soute Avant - Surveillance</h4>
+<p>Détecteur débit : 2 en vol et sol. Surveillance T° sol.</p>
+<p>Duct Press : surveillance présence air.</p>
+
+<h3>⚠️ MODE OVERRIDE</h3>
+
+<h4>En vol - Passage AUTO si</h4>
+<p>Baisse débit 2 sondes : Perte 2 flow sensors | Fumée soute élec | Panne 2 Supply Fan | ARM extinction soute AV | P/B P5 override</p>
+<p>Carte <strong>ECSMC right primaire</strong> à mise sous tension.</p>
+
+<h4>Au sol</h4>
+<p><strong>⚠️ Jamais Switch equipment cooling P5 sur override !</strong></p>
+<p>Si flow sensor bas débit ou surchauffe → alarme sonore TAV</p>
+<p>Surveillance 4 points par pressure switch.</p>
+<p>Si baisse débit : <strong>MSG ADVISORY EQT COOLING + KLAXON TAV</strong></p>
+<p>→ SUPPLY FAN OFF | VENT FAN OFF | FERME OVERRIDE VALVE | DÉMARRE CONV SUP CLG FAN</p>
+<p><strong>🔧 Reset :</strong> Switch <strong>EQUIP COOLING P5</strong> ou cartes ECSMC.</p>
+
+<h4>Soute Électronique</h4>
+<p><strong>Fumée détectée → mode override</strong> (1 détecteur soute AV + 1 détecteur soute MEC)</p>
+<p>Smoke detector Soute Avant récupère info fumée (indépendant Soute élec) → ECSMC via ASG Card.</p>
+
+<h4>Converter Supplemental Cooling Fan (backup)</h4>
+<p>Fonctionne si : Power up test | Override | Backup gen ON | Perte 2 supply fans</p>
+
+<h4>Supply Fan (2 ventilateurs)</h4>
+<p><strong>Dx primaire, Gx backup</strong> (Gx testé mise sous tension).</p>
+
+<h4>Vent Fan</h4>
+<p><strong>Arrêt à mise en route moteur.</strong></p>
+
+<h4>ECC - Equipment Cooling Controller</h4>
+<p>Fonctionnement <strong>vol uniquement.</strong></p>
+<p><strong>2 ECC</strong> (Gx/Dx). Secours panne ECSMC (backup latched ECSMC).</p>
+<p><strong>🔧 Reset :</strong> Info sol par PSEU.</p>
+<p>Gère low flow uniquement : après 6 min sans détection ECSMC → mode override après 20 min.</p>
+
+<h4>Règles importantes</h4>
+<p><strong>Clim soute AV :</strong> Toutes vannes fermées SAUF Vent Valve</p>
+<p><strong>Feu soute :</strong> Toutes vannes fermées</p>
+<p>Cartes ECSMC GX/DX gèrent ventilation soute électronique.</p>
+<p>Commande vannes par ECSMC au travers ECC.</p>
+<p>ECC secours panne (backup ECSMC vol uniquement).</p>
+<p><strong>ECC : 6 modes</strong> pour récup ventilation. Changent toutes 60s jusqu'à récup.</p>
+
+<h4>Détection Fumée</h4>
+<p>E/E Cooling Smoke Detection → passage OVERRIDE</p>
+<p>Prélèvement air 2 endroits après Override Valve et Vent Fan.</p>
+<p>2 canaux par Chambre.</p>
+
+<h3>📺 VENTILATION IFE</h3>
+<p><strong>2 vannes :</strong> Manifold Shutoff + Overboard Shutoff (ECSMC). 1 ouverte, 1 fermée.</p>
+<p>Fermées + arrêt fan si feu soute ou fumée manifold IFE (1 détecteur fumée).</p>
+<p>Ventilation : 1 GTR route + clim soute AV.</p>
+<p><strong>🔧 DISPATCH :</strong> Fan panne → IFE <strong>INOP</strong> (condamné).</p>
+
+<h4>777-300 avec retrofit</h4>
+<p>Plus qu'1 ventilateur (overboard supprimé). Extraction MIX BAY. Fan permanent.</p>
+
+<h3>🔧 DIFFÉRENCES 777-300</h3>
+
+<h4>OFAR (1 Zone)</h4>
+<p><strong>CTC Gx</strong> commande. Heaters électriques régulés T°.</p>
+<p>Air pack gauche via Air Supply SOV (s'ouvre <strong>25000 ft</strong>).</p>
+<p>Feu : Ferme Air Supply SOV + Ouvre Exhaust Valve.</p>
+
+<h4>OFCR (3 Zones)</h4>
+<p>Air Supply SOV gérée <strong>ELMS.</strong> Pas condition 25000 ft.</p>
+<p>3 heaters régulés T°.</p>
+<p>Feu : Ferme Air Supply + Ouvre Exhaust Valve.</p>
+<p><strong>🔧 Fumée OFCR détectée :</strong> Reset chillers obligatoire.</p>
+
+<h4>Volets RAM AIR EXIT</h4>
+<p>Présents mais <strong>désactivés.</strong></p>
+
+<h3>🎈 PRESSURISATION</h3>
+
+<h4>2 Calculateurs ASCPC</h4>
+<p><strong>GX Primary | DX Backup</strong></p>
+<p>Les 2 capables assurer gestion pressu.</p>
+<p><strong>2 modes :</strong> Fixed Rate Control | Minimum Rate Control</p>
+<p><strong>🔧 Preflight Test :</strong> Fin chaque mise en route. ASCPC teste Outflow valves.</p>
+
+<h4>Remote Cabin Pressure</h4>
+<p>Mesure pression cabine indépendamment ASCPC. Info <strong>ELMS.</strong></p>
 
 <h4>Limites</h4>
 <p><strong>Cabin Altitude :</strong> Limite <strong>8500 ft</strong> (rouge EICAS)</p>
-<p><strong>Delta P :</strong> <strong>8,6 Psi</strong> (<strong>9,25 Psi</strong> rouge EICAS)</p>
+<p><strong>Delta P :</strong> <strong>8,6 Psi</strong> (9,25 Psi rouge EICAS)</p>
 <p>Pression cabine = altitude terrain + 0,15 Psi (limite 8000 ft ou Delta P 8,6)</p>
 
-<h4>Valves de sécurité</h4>
-<p><strong>Positive Relief (2) :</strong> Côté Gx. Régulent <strong>8,95-9,2 Psi</strong>. Full open mécanique <strong>9,42 Psi</strong>. Pas indication poste, purement mécaniques. Témoin rouge si ouverture</p>
-<p><strong>Negative Relief (4) :</strong> 2 par côté. Ouverture <strong>-0,2 Psi</strong>, full open <strong>-0,5 Psi</strong>. Pas indication, purement mécaniques</p>
+<h4>Positive Pressure Relief Valve (2)</h4>
+<p>Côté <strong>Gx avion.</strong></p>
+<p>Régulent <strong>8,95 Psi → 9,2 Psi</strong></p>
+<p><strong>Full open mécanique : 9,42 Psi</strong></p>
+<p><strong>⚠️ Pas indication poste. Purement mécaniques.</strong></p>
+<p><strong>Témoin rouge</strong> apparaît lors ouverture.</p>
 
-<h4>Outflow Valves</h4>
-<p>Volets + Vanne Control Unit. Côté GX (1 avant, 1 arrière). Gérées par 1 ASCPC. Débit fuite géré par 2 OFV</p>
-<p><strong>Moteurs :</strong> 2 sur Control Unit (1 par ASCPC). Manuel → contrôle direct. 777-300 : 3 moteurs (2 ASCPC + 1 manuel)</p>
-<p><strong>Ouverture régulation :</strong> <strong>80% AR / 20% AV</strong></p>
-<p>Si clim soute AV, feu soute, ou 1 OFV inop → <strong>50% AR / 50% AV</strong></p>
-<p><strong>Commandes P5 :</strong> AUTO (ASCPC gère), MAN (manuel), DECREASE/INCREASE (modif altitude terrain)</p>
+<h4>Negative Pressure Relief Valve (4)</h4>
+<p><strong>2 par côté.</strong> Si altitude avion croise altitude terrain.</p>
+<p>Ouverture : <strong>-0,2 Psi</strong> | Full open : <strong>-0,5 Psi</strong></p>
+<p><strong>⚠️ Pas indication poste. Purement mécaniques.</strong></p>
+
+<h4>OUTFLOW VALVES</h4>
+<p>Volets + Vanne Control Unit. <strong>Côté GX</strong> (1 avant, 1 arrière).</p>
+<p>Gérées par <strong>1 ASCPC.</strong> 1 seul suffit assurer gestion.</p>
+<p>Débit fuite géré par <strong>2 Out Flow Valves.</strong></p>
+
+<h4>Moteurs</h4>
+<p><strong>2 moteurs</strong> sur Vanne Control Unit (1 par ASCPC).</p>
+<p><strong>Manuel :</strong> Contrôle direct Out Flow Valve.</p>
+<p><strong>777-300 :</strong> 3 moteurs (2 ASCPC + 1 manuel).</p>
+
+<h4>Ouverture en régulation</h4>
+<p><strong>Normal :</strong> 80% OFV AR | 20% OFV AV</p>
+<p><strong>Ouverture 50% AR / 50% AV si :</strong></p>
+<p>Clim soute AV | Feu soute | <strong>🔧 1 OFV INOP</strong></p>
+
+<h4>Commandes P5</h4>
+<p><strong>AUTO :</strong> ASCPC gère</p>
+<p><strong>MAN :</strong> Commande manuelle outflow valves (allume MAN)</p>
+<p><strong>DECREASE/INCREASE :</strong> Modif altitude terrain manuelle</p>
+
+<h4>Capteur pression</h4>
+<p>ASCPC : prise pression cabine (cabin pressure sense port)</p>
+<p><strong>Cabin pressure sensor</strong> corrige pressurisation.</p>
+
+<h3>🔧 RÉSUMÉ MÉCANICIEN PISTE</h3>
+
+<h4>✅ ÉLÉMENTS INTERCHANGEABLES</h4>
+<p><strong>Tous éléments pack 1 ⟷ pack 2 SAUF tuyaux</strong></p>
+<p>Pack Flow Control Valves (upper/lower)</p>
+<p>Torque motors</p>
+<p>Pack flow sensors</p>
+<p>Sondes température (entre elles et en amont)</p>
+<p>TAMV (8 zones + soute)</p>
+<p>Recirculating fans upper (2)</p>
+<p>Low Limit Valve ⟷ Second Stage Bypass Valve</p>
+
+<h4>🔧 INFOS DISPATCH CRITIQUES</h4>
+<p><strong>TAPRSOV fail safe CLOSED :</strong> Dispatch vanne fermée OK</p>
+<p><strong>Plug dispatch :</strong> Upper valve (tolérance fermeture)</p>
+<p><strong>Si upper HS :</strong> Remplacer par bypass valve (interchangeable)</p>
+<p><strong>Recirculating fan panne :</strong> Augmente débit pack auto (dispatch OK)</p>
+<p><strong>1 OFV inop :</strong> Ouverture 50/50 AR/AV (dispatch OK)</p>
+<p><strong>IFE fan panne :</strong> IFE INOP (condamné)</p>
+
+<h4>🔧 TESTS & CHECKS TERRAIN</h4>
+<p><strong>Tests MAT :</strong> Packs COUPÉS obligatoire</p>
+<p><strong>Test TAMV au MAT</strong></p>
+<p><strong>Test heater door :</strong> Seul testable MAT (vol + 1 pack)</p>
+<p><strong>Arrêt pack sol :</strong> Attendre 2 min (déshumidification)</p>
+<p><strong>Power up test :</strong> Fans, ASCPC (outflow valves)</p>
+<p><strong>Test auto démarrage moteur :</strong> TAPRSOV (CTC full open, vérifie ASCPC ferme)</p>
+
+<h4>🔧 RESET POSSIBLES</h4>
+<p><strong>AIR COND RESET (P5) :</strong> CTC, recirculating fans, pack, TAMV</p>
+<p><strong>EQUIP COOLING switch (P5) :</strong> Override, surchauffe</p>
+<p><strong>Reset MAT :</strong> Surchauffe vannes réchauffage soute</p>
+<p><strong>Reset chillers :</strong> Si fumée OFCR (777-300)</p>
+
+<h4>⚠️ RÈGLES SÉCURITÉ</h4>
+<p><strong>APU sol :</strong> 2 packs en route OBLIGATOIRE</p>
+<p><strong>Jamais override P5 au sol</strong></p>
+<p><strong>ARM feu :</strong> Arrêt auto ventilation zone</p>
+<p><strong>Flow Control Valve ouverte :</strong> Si pas jus + pression pneumatique</p>
+<p><strong>ETOPS :</strong> Jamais croiser CTC/ASCPC</p>
         `,
         schemas: [
+            {
+                url: "assets/images/ata21/pack-cooling.jpg",
+                caption: "Pack Cooling - Fonctionnement détaillé du système de refroidissement"
+            },
+            {
+                url: "assets/images/ata21/equipment-cooling.jpg",
+                caption: "Equipment Cooling - Schéma de ventilation soute électronique"
+            },
             {
                 url: "assets/images/ata21/ac-pack-clg.jpg",
                 caption: "Pack CLG and Mix Manifold Temp Control"
