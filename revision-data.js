@@ -722,5 +722,5 @@ const revisionData = [
             }
         ]
     }
-];
+]; 
 
